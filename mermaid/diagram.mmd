@@ -1,0 +1,20 @@
+graph TD
+    A[User] -->|GET /| B[Render add.html]
+    A -->|POST /addexpense| C[Add new expense to database]
+    C -->|Redirect to /expenses| D[Show expenses]
+
+    D -->|GET /expenses| E[Fetch all expenses from database]
+    E -->|Calculate totals by category| F[Render expenses.html with total and categories]
+
+    F -->|POST /edit| G[Edit expense in database]
+    G -->|Redirect to /expenses| D
+
+    F -->|GET /updateexpense/id| H[Render updateexpense.html for specific expense]
+    H -->|POST /edit| G
+
+    F -->|GET /delete/id| I[Delete expense from database]
+    I -->|Redirect to /expenses| D
+
+    F -->|GET /addview| J[Fetch all expenses and totals]
+    J -->|POST /addview| C
+    C -->|Redirect to /addview| J

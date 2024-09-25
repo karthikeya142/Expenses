@@ -1,0 +1,98 @@
+
+658. Setting Up Flask Project
+create first environment for the project
+virtualenv env hit enter
+then  cd .\env\Scripts\
+ --  .\activate hit enter it willl activate env
+
+building this huge and complex Budget tracker application,
+let's first basic setup which would be required for our Flask application.
+
+whenever you want to create a flask application, you need to go ahead and create an app.py file
+
+659. Creating Route To Accept Data
+
+ this particular expense manager or budget tracker application, what we want to do is
+ want to accept the expenses which are made by the user.
+if you go out to a movie and you spend a bunch of money on movie tickets
+
+660. Creating Form
+
+every expense would obviously have the date
+because date is important to know when exactly you have made that particular expense
+another filed name of expensive
+ next thing which is important is the amount of expense which you made.
+ another field and the final field is going to be an expense category,
+ which basically states what kind of category this expense belongs to.
+  these are the different values which we need to accept from the user.
+
+
+
+661. Styling The Form
+
+
+662. Getting Values From The Form
+
+handling the submission of this particular form which we have created.
+
+663. Creating A Database Model
+ we need install first Flask SQL Alchemy as well as the SQL Alchemy Packages.
+
+ pip install SQLAlchemy
+
+ pip install Flask Flask-SQLAlchemy
+
+ RuntimeError: Working outside of application context, indicates that you're trying to access Flask's features
+ (like the database) without the proper application context being set up.
+
+from app import app, db
+>>>
+>>> with app.app_context():
+...     db.create_all()
+
+
+
+
+{% extends 'base.html' %}
+<html >
+<head>
+</head>
+<body>
+{% block body %}
+<div class="container">
+     {% for expense in expenses %}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow bg-white">
+                <div class="card-body">
+                    <!-- Headline row -->
+                            <div class="row">
+                                <div class="col-md-2"><strong>Date</strong></div>
+                                <div class="col-md-2"><strong>Expense Name</strong></div>
+                                <div class="col-md-2"><strong>Amount</strong></div>
+                                <div class="col-md-2"><strong>Category</strong></div>
+
+
+                        <!-- Data rows -->
+
+                        <div class="col-md-2"> {{expense.date}}</div>
+                        <div class="col-md-2">{{expense.Expensename}}</div>
+                        <div class="col-md-2">{{expense.amount}}</div>
+                        <div class="col-md-2">{{expense.category}}</div>
+                        <div class="col-md-2"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {%endfor %}
+
+</div>
+
+
+
+{% endblock %}
+
+</body>
+</html>
