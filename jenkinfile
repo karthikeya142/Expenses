@@ -1,0 +1,62 @@
+pipeline {
+    agent { label 'slave-1' }  // Use the label for your Jenkins agent
+
+    environment {
+        APP_PORT = '5000'
+        APP_HOST = '0.0.0.0'  // Allows access on all interfaces
+        GUNICORN_WORKERS = '4' // Number of Gunicorn workers
+        PUBLIC_IP = ''  // Public IP of the server
+    }
+
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/karthikeya142/Expenses.git'
+            }
+        }
+
+        stage('Set Up Virtual Environment') {
+            steps {
+                sh '''
+                python3 -m venv env
+                source env/bin/activate
+                '''
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                source env/bin/activate
+                pip3 install SQLAlchemy
+                pip3 install Flask Flask-SQLAlchemy
+                pip3  install gunicorn
+                '''
+            }
+        }
+
+        stage('Run Gunicorn') {
+            steps {
+                sh '''
+                source env/bin/activate
+                gunicorn -w ${GUNICORN_WORKERS} -b ${APP_HOST}:${APP_PORT} app:app
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Deployment complete. Flask app running on http://${env.APP_HOST}:${env.APP_PORT}"
+        }
+        failure {
+            echo "Deployment failed!"
+        }
+    }
+}
