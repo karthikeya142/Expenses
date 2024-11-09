@@ -2,6 +2,7 @@ pipeline {
     agent { label 'slave-1' }  // Use the label for your Jenkins agent
 
     environment {
+        SCANNER_HOME = tool 'sonar-scanner'
         APP_PORT = '5000'
         APP_HOST = '0.0.0.0'  // Allows access on all interfaces
         GUNICORN_WORKERS = '4' // Number of Gunicorn workers
@@ -38,6 +39,18 @@ pipeline {
                 pip3 install Flask Flask-SQLAlchemy
                 pip3  install gunicorn
                 '''
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sonar-server') {
+                sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectKey=Expenses \
+                    -Dsonar.sources=. \
+                    -Dsonar.language=python \
+                    -Dsonar.python.coverage.reportPaths=coverage.xml
+                    '''
+                    
+                }
             }
         }
 
